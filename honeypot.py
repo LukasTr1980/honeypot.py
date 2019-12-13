@@ -33,7 +33,7 @@ def main():
 
 def writeLog(fromip, message):
     f = open('pot_log.txt', 'a')
-    f.write('IP:' + fromip + ' Port:' + str(LPORT) + ' | ' + message.replace('\r\n', ' '))
+    f.write('IP:' + fromip + ' Port:' + str(LPORT) + ' | ' + message.replace('\r\n', ' ') + '\n')
     f.close()
 
 def exit_handler():
