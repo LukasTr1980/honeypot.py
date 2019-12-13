@@ -3,10 +3,10 @@ import atexit
 
 # Local IP/Port for the honeypot to listen on (TCP)
 LHOST = '0.0.0.0'
-LPORT = 21
+LPORT = 22
 
 # Banner displayed when connecting to the honeypot
-BANNER = b'220 ProFTPD 1.2.8 Server\nName: '
+BANNER = b'SSH-2.0-OpenSSH_6.7p1\nLogin: '
 
 # Socket timeout in seconds
 TIMEOUT = 10
