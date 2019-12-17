@@ -12,37 +12,35 @@ BANNER = b'SSH-2.0-OpenSSH_6.7p1\nLogin: '
 TIMEOUT = 10
 
 def main():
-    print ('[*] Honeypot starting on ' + LHOST + ':' + str(LPORT))
-    atexit.register(exit_handler)
-    listener.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    listener.bind((LHOST, LPORT))
-    listener.listen(5)
-    while True:
-        (insock, address) = listener.accept()
-        insock.settimeout(TIMEOUT)
-        print ('[*] Honeypot connection from ' + address[0] + ':' + str(address[1]) + ' on port ' + str(LPORT))
-        try:
-            insock.send(BANNER)
-            data = insock.recv(1024)
-        except socket.error as e:
-            writeLog(address[0],'Error: ' + str(e))
-        else:
-            writeLog(address[0],data)
-        finally:
-            insock.close()
-
-def writeLog(fromip, message):
-    f = open('pot_log.txt', 'a')
-    f.write('IP:' + fromip + ' Port:' + str(LPORT) + ' | ' + message.replace('\r\n', ' ') + '\n')
-    f.close()
+	print ('[*] Honeypot starting on ' + LHOST + ':' + str(LPORT))
+	atexit.register(exit_handler)
+	listener.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+	listener.bind((LHOST, LPORT))
+	listener.listen(5)
+	while True:
+		f = open('pot_log.txt', 'a')
+		(insock, address) = listener.accept()
+		insock.settimeout(TIMEOUT)
+		print (f'[*] Honeypot connection from IP: {address[0]} on PORT: {address[1]}')
+		f.write(f'[*] Honeypot connection from IP: {address[0]} on PORT: {address[1]}\n')
+		try:
+			insock.send(BANNER)
+			data = insock.recv(1024)
+		except socket.error as e:
+			f.write(f'IP: {address[0]} with Error: {e}\n')
+		else:
+			f.write(f'IP: {address[0]}, with Data: {data}\n')
+		finally:
+			insock.close()
+			f.close()
 
 def exit_handler():
-    print ('\n[*] Honeypot is shutting down!')
-    listener.close()
+	print ('\n[*] Honeypot is shutting down!')
+	listener.close()
 
 listener = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 if __name__ == '__main__':
-    try:
-        main()
-    except KeyboardInterrupt:
-        pass
+	try:
+		main()
+	except KeyboardInterrupt:
+		pass
