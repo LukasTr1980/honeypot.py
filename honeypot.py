@@ -25,7 +25,11 @@ def main():
 		f.write(f'[*] Honeypot connection from IP: {address[0]} on PORT: {address[1]}\n')
 		try:
 			insock.send(BANNER)
-			data = insock.recv(1024)
+			data = insock.recv(8192)
+			insock.send(b'User: ')
+			data = insock.recv(8192)
+			insock.send(b'Password: ')
+			data = insock.recv(8192)
 		except socket.error as e:
 			f.write(f'IP: {address[0]} with Error: {e}\n')
 		else:

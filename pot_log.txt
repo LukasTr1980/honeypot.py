@@ -1,0 +1,11 @@
+[*] Honeypot connection from IP: 127.0.0.1 on PORT: 63432
+[*] Honeypot connection from IP: 127.0.0.1 on PORT: 63454
+IP: 127.0.0.1, with Data: b'm,hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha1-etm@openssh.com,umac-64@openssh.com,umac-128@openssh.com,hmac-sha2-256,hmac-sha2-512,hmac-sha1\x00\x00\x00\x04none\x00\x00\x00\x04none\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+[*] Honeypot connection from IP: 127.0.0.1 on PORT: 63478
+IP: 127.0.0.1, with Data: b'm,hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha1-etm@openssh.com,umac-64@openssh.com,umac-128@openssh.com,hmac-sha2-256,hmac-sha2-512,hmac-sha1\x00\x00\x00\x04none\x00\x00\x00\x04none\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+[*] Honeypot connection from IP: 127.0.0.1 on PORT: 54784
+IP: 127.0.0.1, with Data: b'm,hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha1-etm@openssh.com,umac-64@openssh.com,umac-128@openssh.com,hmac-sha2-256,hmac-sha2-512,hmac-sha1\x00\x00\x00\x04none\x00\x00\x00\x04none\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+[*] Honeypot connection from IP: 127.0.0.1 on PORT: 54793
+IP: 127.0.0.1, with Data: b'm,hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha1-etm@openssh.com,umac-64@openssh.com,umac-128@openssh.com,hmac-sha2-256,hmac-sha2-512,hmac-sha1\x00\x00\x00\x04none\x00\x00\x00\x04none\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+[*] Honeypot connection from IP: 127.0.0.1 on PORT: 54815
+IP: 127.0.0.1 with Error: [WinError 10054] Eine vorhandene Verbindung wurde vom Remotehost geschlossen
