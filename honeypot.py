@@ -1,107 +1,60 @@
-<<<<<<< HEAD
+import paramiko
+import logging
+import sys
 import socket
-import atexit
+import threading
 
-# Local IP/Port for the honeypot to listen on (TCP)
-LHOST = '0.0.0.0'
-LPORT = 22
+logging.basicConfig()
+logger = logging.getLogger()
 
-# Banner displayed when connecting to the honeypot
-BANNER = b'SSH-2.0-OpenSSH_6.7p1\nLogin: '
+host_key = paramiko.RSAKey(filename='keys/id_rsa_openssh_priv')
 
-# Socket timeout in seconds
-TIMEOUT = 10
 
-def main():
-	print ('[*] Honeypot starting on ' + LHOST + ':' + str(LPORT))
-	atexit.register(exit_handler)
-	listener.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-	listener.bind((LHOST, LPORT))
-	listener.listen(5)
-	while True:
-		f = open('pot_log.txt', 'a')
-		(insock, address) = listener.accept()
-		insock.settimeout(TIMEOUT)
-		print (f'[*] Honeypot connection from IP: {address[0]} on PORT: {address[1]}')
-		f.write(f'[*] Honeypot connection from IP: {address[0]} on PORT: {address[1]}\n')
-		try:
-			insock.send(BANNER)
-			data = insock.recv(8192)
-			insock.send(b'User: ')
-			data = insock.recv(8192)
-			insock.send(b'Password: ')
-			data = insock.recv(8192)
-		except socket.error as e:
-			f.write(f'IP: {address[0]} with Error: {e}\n')
-		else:
-			f.write(f'IP: {address[0]}, with Data: {data}\n')
-		finally:
-			insock.close()
-			f.close()
+class Server(paramiko.ServerInterface):
+    def __init__(self):
+        self.event = threading.Event()
 
-def exit_handler():
-	print ('\n[*] Honeypot is shutting down!')
-	listener.close()
+    def check_channel_request(self, kind, chanid):
+        if kind == 'session':
+            return paramiko.OPEN_SUCCEEDED
 
-listener = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-if __name__ == '__main__':
-	try:
-		main()
-	except KeyboardInterrupt:
-		pass
-=======
-import socket
-import atexit
+    def check_auth_publickey(self, username, key):
+        return paramiko.AUTH_SUCCESSFUL
 
-# Local IP/Port for the honeypot to listen on (TCP)
-LHOST = '0.0.0.0'
-LPORT = 22
+    def get_allowed_auths(self, username):
+        return 'publickey'
 
-# Banner displayed when connecting to the honeypot
-BANNER = b'SSH-2.0-OpenSSH_6.7p1\nLogin: '
+    def check_channel_exec_request(self, channel, command):
+        # This is the command we need to parse
+        print(command)
+        self.event.set()
+        return True
 
-# Socket timeout in seconds
-TIMEOUT = 10
 
-def main():
-	print ('[*] Honeypot starting on ' + LHOST + ':' + str(LPORT))
-	atexit.register(exit_handler)
-	listener.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-	listener.bind((LHOST, LPORT))
-	listener.listen(5)
-	while True:
-		f = open('pot_log.txt', 'a')
-		(insock, address) = listener.accept()
-		insock.settimeout(TIMEOUT)
-		print (f'[*] Honeypot connection from IP: {address[0]} on PORT: {address[1]}')
-		f.write(f'[*] Honeypot connection from IP: {address[0]} on PORT: {address[1]}\n')
-		try:
-			insock.send(BANNER)
-<<<<<<< HEAD
-			data = insock.recv(8192)
-			insock.send(b'User: ')
-			data = insock.recv(8192)
-			insock.send(b'Password: ')
-			data = insock.recv(8192)
-=======
-			data = insock.recv(4096)
->>>>>>> 0b00a26ee6df041b4d307baa1011a0a0ee0f5743
-		except socket.error as e:
-			f.write(f'IP: {address[0]} with Error: {e}\n')
-		else:
-			f.write(f'IP: {address[0]}, with Data: {data}\n')
-		finally:
-			insock.close()
-			f.close()
+def listener():
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    sock.bind(('', 2222))
 
-def exit_handler():
-	print ('\n[*] Honeypot is shutting down!')
-	listener.close()
+    sock.listen(100)
+    client, addr = sock.accept()
 
-listener = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-if __name__ == '__main__':
-	try:
-		main()
-	except KeyboardInterrupt:
-		pass
->>>>>>> 4fdfe91043d008a36e48cbbf37c73d97d2ec3e9f
+    t = paramiko.Transport(client)
+    t.set_gss_host(socket.getfqdn(""))
+    t.load_server_moduli()
+    t.add_server_key(host_key)
+    server = Server()
+    t.start_server(server=server)
+
+    # Wait 30 seconds for a command
+    server.event.wait(30)
+    t.close()
+
+
+while True:
+    try:
+        listener()
+    except KeyboardInterrupt:
+        sys.exit(0)
+    except Exception as exc:
+        logger.error(exc)
