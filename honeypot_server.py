@@ -47,9 +47,9 @@ try:
 			command= input("SHELL >> ")
 			for ch in [' ', 'n', 'cd..']:
 				if ch in command:
-					command = command.replace(ch, ''+ch)
-				chan.send(command)
-				print (chan.recv(1024) + b'n')
+					command = command.replace(ch, '')
+			chan.send(command)
+			print (chan.recv(1024) + b'n')
 
 except (Exception, KeyboardInterrupt) as e:
 		print ('Caught exception: ' + str(e) + ': ' + str(e))
